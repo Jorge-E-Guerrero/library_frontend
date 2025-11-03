@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary-color: #c5b0ad;
+  --secondary-color: #acb1d9;
+}
+
+/*
+#b7e4ea
+#acb1d9
+#c5b0ad
+#f8f4e8
+#f7ced6
+*/
+
+/* 
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+} 
+*/
+
+/*TODO: Implement dark theme styles*/
+/*
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+*/
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.main-container {
+  padding: 1rem;
+  min-height: 90vh;
+}
+
+header {
+  height: 60px;
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  margin: 0
+}
+
+.header-container {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+/*
+@media screen and (max-width: 720px) {
+  .header-container {
+    justify-content: center;
+    flex-direction: column;
+  }
+}
+*/
+
+footer {
+  width: 100%;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 1rem;
+  background-color: var(--secondary-color);
+  color: white;
+  text-align: center;
+  height: 125px;
+  padding: 1rem;
+  margin: 0;
+}
+
+.footer-container {
+  bottom: 0;
+  position: relative;
+  margin-top: auto;
+  margin: auto;
+}
