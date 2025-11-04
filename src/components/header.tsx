@@ -9,7 +9,7 @@ export default function Header() {
                     <Button variant="contained" color="primary" startIcon={<DehazeIcon />}></Button>
                 </div>
                 <div className="logo-container">
-                    <h1>Galileo Library</h1>
+                    <h1>Library</h1>
                 </div>
                 <div className="actions-container">
                     <button>Log In</button>
