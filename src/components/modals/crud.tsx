@@ -8,6 +8,10 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
+import { AlertProps, IconProps } from "@mui/material"
+
+import Alert from '@mui/material/Alert';
+import CancelIcon from '@mui/icons-material/Cancel';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import EditIcon from '@mui/icons-material/Edit';
@@ -15,7 +19,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import { requestToApi } from '../../helpers/middleware';
 
-const icons = {
+const icons: { [key: string]: React.ReactNode } = {
     show: <VisibilityIcon />,
     create: <ControlPointIcon />,
     update: <EditIcon />,
@@ -28,6 +32,7 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: "80%",
+    maxWidth: "750px",
     height: "80%",
     bgcolor: 'background.paper',
     border: '2px solid #000',
@@ -41,8 +46,10 @@ export default function CrudModal({ onSuccess, id = null, data = {}, formConfig 
 
     const { model, action, fields } = formConfig;
 
+    const [alertData, setAlertData] = useState<{ message: string, level: AlertProps["severity"] }>({ message: "", level: "warning" });
+
     const [iconButton, setIconButton] = useState(icons[action]);
-    const [submitText, setSubmitText] = useState("");
+    const [actionText, setActionText] = useState("");
     const [showSubmitButton, setShowSubmitButton] = useState(false);
 
     const [open, setOpen] = useState(false);
@@ -56,7 +63,7 @@ export default function CrudModal({ onSuccess, id = null, data = {}, formConfig 
 
         const { label, type, placeholder, pattern, creatable, editable, visible } = fieldConfig;
 
-        formData[field] = formData[field] ?? "";
+        formData[field] = formData[field] ?? data[field] ?? "";
 
         // Handle visibility
         const classList = ["form-field"];
@@ -64,7 +71,7 @@ export default function CrudModal({ onSuccess, id = null, data = {}, formConfig 
             ? action === "create"
                 ? !creatable
                 : !editable
-            : false
+            : true
 
         let fieldElement;
         switch (type) {
@@ -91,14 +98,17 @@ export default function CrudModal({ onSuccess, id = null, data = {}, formConfig 
 
     const configureForm = () => {
 
-        if (["create", "update"].includes(action)) {
-            switch (action) {
-                case "create": setSubmitText("Añadir"); break;
-                case "update": setSubmitText("Guardar"); break;
-                case "delete": setSubmitText("Eliminar"); break;
-            }
-            setShowSubmitButton(true);
-        };
+        switch (action) {
+            case "show": setActionText("Ver"); break;
+            case "create": setActionText("Añadir"); break;
+            case "update": setActionText("Guardar"); break;
+            case "delete":
+                setActionText("Eliminar");
+                setAlertData({ level: "warning", message: "¿Estás seguro de que deseas eliminar este registro? Esta acción no se puede deshacer." });
+                break;
+        }
+
+        if (["create", "update", "delete"].includes(action)) setShowSubmitButton(true);
 
         setForm(<Box>
             {Object.entries(fields).map(([fieldKey, fieldConfig]) => {
@@ -126,7 +136,7 @@ export default function CrudModal({ onSuccess, id = null, data = {}, formConfig 
         let method
         switch (action) {
             case "create": method = "post"; break;
-            case "update": method = "put"; break;
+            case "update": method = "patch"; break;
             case "delete": method = "delete"; break;
             default: return console.error(`Invalid action {${action}} for submit`);
         }
@@ -134,13 +144,11 @@ export default function CrudModal({ onSuccess, id = null, data = {}, formConfig 
         const path = ["", model, id].filter(item => ![null, undefined].includes(item)).join("/");
         const response = await requestToApi({ method, path, payload: formData });
 
-        console.log("Request response: ", response);
-
         const success = response.status === 200;
 
         success
-            ? window.alert(`El registro se logró ${action} correctamente.`)
-            : window.alert(`Ocurrió un error al ${action} el registro.`);
+            ? window.alert(`El registro se logró ${actionText} correctamente.`)
+            : window.alert(`Ocurrió un error al ${actionText} el registro.`);
 
         if (success) {
             handleClose();
@@ -169,10 +177,16 @@ export default function CrudModal({ onSuccess, id = null, data = {}, formConfig 
                     <Box sx={style}>
                         <div className="modal-container">
                             <div className="modal-header">
-                                <h2>User Details</h2>
-                                <Button onClick={handleClose}>Close</Button>
+                                <h2>{actionText} {model}</h2>
+                                <Button startIcon={<CancelIcon />} onClick={handleClose}></Button>
                             </div>
                             <div className="modal-content">
+                                {["delete"].includes(action) ?
+                                    <div className="modal-alert">
+                                        <Alert variant="outlined" severity={alertData.level}>{alertData.message}</Alert>
+                                    </div>
+                                    : null
+                                }
                                 <div className="modal-form-container">
                                     {form}
                                 </div>
@@ -180,13 +194,13 @@ export default function CrudModal({ onSuccess, id = null, data = {}, formConfig 
                             <div className="modal-footer">
                                 <div className="modal-actions">
                                     <Button variant="outlined" color="secondary" onClick={handleClose}>Cancelar</Button>
-                                    {showSubmitButton ? <Button variant="contained" color="primary" onClick={handleSubmit}>{submitText}</Button> : null}
+                                    {showSubmitButton ? <Button variant="contained" color="primary" onClick={handleSubmit}>{actionText}</Button> : null}
                                 </div>
                             </div>
                         </div>
                     </Box>
                 </Fade>
             </Modal>
-        </div>
+        </div >
     );
 }

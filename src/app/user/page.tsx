@@ -55,9 +55,9 @@ export default function Page() {
   const [data, setData] = useState([]);
 
   const columns: GridColDef[] = [
-    { field: 'us_userId', headerName: 'ID', width: 70 },
-    { field: 'us_username', headerName: 'Name', width: 200 },
-    { field: "actions", headerName: "Actions", width: 300, renderCell: (params) => {
+    { field: 'us_userId', headerName: 'ID', width: 100 },
+    { field: 'us_username', headerName: 'Name', flex: 1, minWidth: 150 },
+    { field: "actions", headerName: "Actions", minWidth: 200, maxWidth: 200, renderCell: (params) => {
 
         const { id, row } = params;
         const itemData = data.find((item: { us_userId: number }) => item.us_userId === id);

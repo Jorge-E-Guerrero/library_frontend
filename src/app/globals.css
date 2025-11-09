@@ -51,7 +51,7 @@ body {
   max-width: 1200px;
   padding: 1rem;
   min-height: 90vh;
-  padding: 2rem 5rem;
+  padding: 1rem;
 }
 
 header {
@@ -80,6 +80,48 @@ header {
 }
 */
 
+.sidebar-container {
+  width: 300px;
+  padding: 1rem;
+  background-color: var(--secondary-color);
+  height: 100%;
+}
+
+.sidebar-header {
+  margin-bottom: 1rem;
+  font-weight: bold;
+  border-bottom: #171717 2px solid;
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-item {
+  text-decoration: none;
+  color: var(--foreground);
+}
+
+.sidebar-link {
+  text-decoration: none;
+  color: var(--foreground);
+}
+
+.sidebar-link:hover {
+  text-decoration: underline;
+  color: var(--secondary-color);
+}
+
+.arrow-icon {
+  margin-left: auto;
+}
+
+.menu-dropdown-item .sub-item-container {
+  padding-left: 1.5rem;
+}
+
 footer {
   width: 100%;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
@@ -104,17 +146,39 @@ footer {
   gap: 0.5rem;
 }
 
+.modal-body .modal-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 750px;
+  height: min-content;
+  min-height: 300px;
+  max-height: 60vh;
+  background-color: var(--background);
+  border: 2px solid #000;
+  box-shadow: 24;
+  padding: 4;
+}
+
+
 .modal-container {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
+
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
   border-bottom: 1px solid #ccc;
+}
+
+.modal-alert {
+  padding-bottom: 1rem;
 }
 
 .modal-content {
@@ -144,6 +208,14 @@ footer {
 @media screen and (max-width: 720px) {
   .modal-actions {
     flex-direction: column;
+  }
+}
+
+@media screen and (max-height: 500px) {
+
+  .modal-container {
+    max-height: 90vh !important;
+    overflow-y: scroll;
   }
 }
 

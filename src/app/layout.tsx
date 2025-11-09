@@ -31,7 +31,7 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Header />
-        <div className="main-container" aria-hidden="true">
+        <div className="main-container">
           <div className="content-container">
             {children}
           </div>
