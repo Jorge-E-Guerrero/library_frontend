@@ -6,14 +6,31 @@
 }
 
 .detail-header {
+    display: flex;
     background-color: coral;
     min-height: 20px;
+    padding: 1rem;
+}
+
+.detail-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.back-button {
+    padding: 0.5rem;
+}
+
+.detail-title {
+    font-size: 1.5em;
+    font-weight: bold;
 }
 
 .detail-actions {
     display: flex;
     justify-content: flex-end;
-    padding-bottom: 1rem;
+    margin-left: auto;
 }
 
 .detail-content {

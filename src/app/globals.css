@@ -155,7 +155,7 @@ footer {
   max-width: 750px;
   height: min-content;
   min-height: 300px;
-  max-height: 60vh;
+  max-height: 90vh;
   background-color: var(--background);
   border: 2px solid #000;
   box-shadow: 24;
