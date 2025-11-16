@@ -1,9 +1,49 @@
+.content-container {
+    max-width: 1400px;
+}
+
+.page-header-container {
+    background-color: var(--secondary-color);
+    display: flex;
+    justify-content: flex-start;
+    padding: 1rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+}
+
+.main-content-container {
+    display: flex;
+    padding: 1rem;
+    gap: 1rem;
+    max-height: 75vh;
+}
+
+.header-toolbar {
+    background-color: lightblue;
+    width: 100%;
+    height: 50px;
+}
+
+.genres-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 250px;
+    max-width: 250px;
+    max-height: 75vh;
+    overflow-y: scroll;
+    padding: 0.5em;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
 
 .catalog-container {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
     gap: 16px;
+    overflow-y: auto;
+    width: 100%;
 }
 
 .book-card-container {

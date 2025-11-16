@@ -114,7 +114,7 @@ export default function Page() {
 
   return (
     <div className="page-container">
-      <div className="header-container">
+      <div className="page-header-container">
         <div className="title-container">
           <h1>User Management</h1>
         </div>
