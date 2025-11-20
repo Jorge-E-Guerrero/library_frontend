@@ -1,6 +1,6 @@
 "use client";
 
-import { IconButton } from "@mui/material";
+import { Button } from "@mui/material";
 import {
     ArrowBack as ArrowBackIcon,
 } from '@mui/icons-material';
@@ -17,9 +17,14 @@ export default function DetailHeader({ title }: { title?: string }) {
 
     return (
         <div className="detail-title-container">
-            <IconButton className="back-button" onClick={goBack} color="primary" aria-label="back to list">
-                <ArrowBackIcon />
-            </IconButton>
+            <Button
+                variant="contained"
+                className="back-button icon-button"
+                startIcon={<ArrowBackIcon />}
+                onClick={goBack}
+                color="primary"
+                aria-label="back to list">
+            </Button>
             <h2 className="detail-title">{title}</h2>
         </div>
     )

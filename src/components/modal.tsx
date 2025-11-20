@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
     Modal as MuiModal,
@@ -19,12 +19,16 @@ const style = {
     p: 4,
 }
 
-export function Modal({ children, config, data }: { children: React.ReactNode, config: { [key: string]: any }, data: { [key: string]: any } }) {
+export function Modal({ children, config, data, reddirect }: { children: React.ReactNode, config: { [key: string]: any }, data: { [key: string]: any }, reddirect?: boolean }) {
 
     const router = useRouter();
 
     const [open, setOpen] = useState(true);
     const handleClose = () => router.back();
+
+    useEffect(() => {
+        if (reddirect === true) setOpen(false)
+    },[reddirect]);
 
     return (
         <MuiModal

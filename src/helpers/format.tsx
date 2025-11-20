@@ -1,4 +1,4 @@
-export const formatDate = ({date, format = "es-GT", timezone, options = { dateStyle: "medium" }}: {date: Date, format?: string, timezone?: string, options?: Intl.DateTimeFormatOptions}) => {
+export const formatDate = ({date, format = "es-GT", timezone = "UTC", options = { dateStyle: "medium" }}: {date: Date, format?: string, timezone?: string, options?: Intl.DateTimeFormatOptions}) => {
     try {
         if (!(date instanceof Date)) date = new Date(date);
         return Intl.DateTimeFormat(format, {

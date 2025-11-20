@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react';
+import { debounce } from 'lodash';
 
 import './book.css';
 
@@ -20,11 +21,13 @@ import {
 
 import {
     Search as SearchIcon,
+    AutoStories as AutoStoriesIcon
 } from "@mui/icons-material";
 
 import Search from '../../components/utils/search';
 import { requestToApi } from '../../helpers/middleware';
 import { fullname } from '@/src/helpers/general';
+import Collapse from '@/src/components/utils/collapse';
 
 const model = "book";
 
@@ -43,6 +46,9 @@ export default function Page() {
 
     const [genres, setGenres] = useState([]);
     const [selectedGenres, setSelectedGenres] = useState<{ [key: number]: boolean }>({});
+
+    const [publishers, setPublishers] = useState([]);
+    const [selectedPublishers, setSelectedPublishers] = useState<{ [key: number]: boolean }>({});
 
     const getBooks = async () => {
         const request = await requestToApi({ method: "get", path: "/book" });
@@ -63,11 +69,25 @@ export default function Page() {
         setSelectedGenres(allGenres);
     }
 
+    const getPublishers = async () => {
+        const request = await requestToApi({ method: "get", path: "/publisher" });
+        const requestData = request.data ?? [];
+
+        const allPublishers: { [key: number]: boolean } = {};
+        requestData.forEach((publisher: any) => {
+            allPublishers[publisher.pu_publisherId] = false;
+        });
+
+        setPublishers(requestData);
+        setSelectedPublishers(allPublishers);
+    }
+
     const refreshData = async () => {
 
         const promises = [
             getBooks(),
             getCategories(),
+            getPublishers(),
         ];
 
         await Promise.all(promises);
@@ -81,48 +101,80 @@ export default function Page() {
         }));
     }
 
+    const checkPublisher = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedPublishers((prev) => ({
+            ...prev,
+            [parseInt(event.target.name)]: event.target.checked,
+        }));
+    }
+
     useEffect(() => {
         if (Object.keys(selectedGenres).length) searchBooks(searchQuery);
     }, [selectedGenres]);
 
+    useEffect(() => {
+        if (Object.keys(selectedPublishers).length) searchBooks(searchQuery);
+    }, [selectedPublishers]);
+
     const searchBooks = async (query: string = "") => {
 
+        // Update search query state also if debounced
         setSearchQuery(query);
 
-        const availableGenres = Object.entries(selectedGenres)
-            .filter(([key, value]) => value)
-            .map(([key]) => parseInt(key));
+        debounce(() => {
 
-        const filtered = books
-            .filter((book: any) =>
-                availableGenres.length === 0
-                    ? true
-                    : book.genres.some((genre: any) => availableGenres.includes(genre.ge_genreId))
-            )
-            .filter((book: any) =>
-                (query === "") ||
-                (
-                    (
-                        book.bo_name.toLowerCase().includes(query.toLowerCase())
-                    ) ||
-                    (
-                        book.authors &&
-                        book.authors.some((author: any) => fullname(author.person?.pe_firstName, author.person?.pe_lastName).toLowerCase().includes(query.toLowerCase()))
-                    )
+            // Genre filtering
+            const availableGenres = Object.entries(selectedGenres)
+                .filter(([key, value]) => value)
+                .map(([key]) => parseInt(key));
+
+            // Publisher filtering
+            const availablePublishers = Object.entries(selectedPublishers)
+                .filter(([key, value]) => value)
+                .map(([key]) => parseInt(key));
+
+            // Book filtering
+            const filtered = books
+                .filter((book: any) =>
+                    availablePublishers.length === 0
+                        ? true
+                        : availablePublishers.includes(book.publisher?.pu_publisherId)
                 )
-            );
+                .filter((book: any) =>
+                    availableGenres.length === 0
+                        ? true
+                        : book.genres.some((genre: any) => availableGenres.includes(genre.ge_genreId))
+                )
+                .filter((book: any) =>
+                    (query === "") ||
+                    (
+                        (
+                            book.bo_name.toLowerCase().includes(query.toLowerCase())
+                        ) ||
+                        (
+                            book.authors &&
+                            book.authors.some((author: any) => fullname(author.person?.pe_firstName, author.person?.pe_lastName).toLowerCase().includes(query.toLowerCase()))
+                        )
+                    )
+                );
 
-        //console.log("All books:", books);
-        //console.log("Filtered books:", filtered);
+            //console.log("All books:", books);
+            //console.log("Filtered books:", filtered);
 
-        setFilteredBooks(filtered);
+            // Update filtered books state
+            setFilteredBooks(filtered);
 
-        const url = new URL(window.location.href);
+            // Update URL search params
+            const url = new URL(window.location.href);
 
-        if (query) url.searchParams.set("search", query);
-        else url.searchParams.delete("search");
+            // Set or delete search param
+            if (query) url.searchParams.set("search", query);
+            else url.searchParams.delete("search");
 
-        window.history.replaceState(null, "", url.toString());
+            // Replace state without reloading
+            window.history.replaceState(null, "", url.toString());
+
+        }, 300)();
 
     }
 
@@ -145,23 +197,29 @@ export default function Page() {
             </div>
 
             <div className="main-content-container">
-                <div className='genres-container'>
-                    <div className='genres-header'>
-                        <Typography className="genres-title" variant="h6">Genres</Typography>
-                    </div>
-                    <div className='genres-list'>
-                        <List className='genres-list-content'>
-                            {genres.map((genre: any) => <ListItem key={genre.ge_genreId}>
-                                {genre.ge_genreName}
-                                <Checkbox
-                                    name={genre.ge_genreId.toString()}
-                                    checked={selectedGenres[genre.ge_genreId]}
-                                    onChange={checkCategory}
-                                />
-                            </ListItem>)}
-                        </List>
-                    </div>
-
+                <div className='filters-container'>
+                    <Collapse name="Genres" icon={<AutoStoriesIcon />}>
+                        {genres.map((genre: any) => <ListItem className="filter-item" key={genre.ge_genreId}>
+                            <Typography className="filter-name" variant="body1">{genre.ge_genreName}</Typography>
+                            <Checkbox
+                                className="filter-checkbox"
+                                name={genre.ge_genreId.toString()}
+                                checked={selectedGenres[genre.ge_genreId]}
+                                onChange={checkCategory}
+                            />
+                        </ListItem>)}
+                    </Collapse>
+                    <Collapse name="Publishers" icon={<AutoStoriesIcon />}>
+                        {publishers.map((publisher: any) => <ListItem className="filter-item" key={publisher.pu_publisherId}>
+                            <Typography className="filter-name" variant="body1">{publisher.pu_publisherName}</Typography>
+                            <Checkbox
+                                className="filter-checkbox"
+                                name={publisher.pu_publisherId.toString()}
+                                checked={selectedPublishers[publisher.pu_publisherId]}
+                                onChange={checkPublisher}
+                            />
+                        </ListItem>)}
+                    </Collapse>
                 </div>
                 <div className="catalog-container">
                     {filteredBooks.map((card: any, index) => (

@@ -41,7 +41,7 @@
     gap: 1rem;
 }
 
-.detail-info {
+.detail-info, .loan-form-container {
     background-color: var(--background);
     display: flex;
     flex-direction: column;

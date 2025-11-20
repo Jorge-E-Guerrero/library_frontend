@@ -159,7 +159,7 @@ export default function CrudModal({ onSuccess, id = null, data = {}, formConfig 
 
     return (
         <div className='crud-modal'>
-            <Button className="modal-button" startIcon={iconButton} onClick={handleOpen}></Button>
+            <Button className="modal-button icon-button" variant="contained" startIcon={iconButton} onClick={handleOpen}></Button>
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
@@ -178,7 +178,7 @@ export default function CrudModal({ onSuccess, id = null, data = {}, formConfig 
                         <div className="modal-container">
                             <div className="modal-header">
                                 <h2>{actionText} {model}</h2>
-                                <Button startIcon={<CancelIcon />} onClick={handleClose}></Button>
+                                <Button className="icon-button" variant="contained" color="primary" startIcon={<CancelIcon />} onClick={handleClose}></Button>
                             </div>
                             <div className="modal-content">
                                 {["delete"].includes(action) ?
@@ -193,7 +193,7 @@ export default function CrudModal({ onSuccess, id = null, data = {}, formConfig 
                             </div>
                             <div className="modal-footer">
                                 <div className="modal-actions">
-                                    <Button variant="outlined" color="secondary" onClick={handleClose}>Cancelar</Button>
+                                    <Button variant="contained" color="secondary" onClick={handleClose}>Cancelar</Button>
                                     {showSubmitButton ? <Button variant="contained" color="primary" onClick={handleSubmit}>{actionText}</Button> : null}
                                 </div>
                             </div>

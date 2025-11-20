@@ -17,6 +17,8 @@ import { formatDate } from "@/src/helpers/format";
 
 const model = "book";
 
+const availableStatuses = [1]; // 1: Available
+
 /// TODO: Agregar ubicacion de estanterías del libro
 
 const detailFields: { [key: string]: { label?: string; render?: (label: string, value: any) => React.ReactElement } } = {
@@ -33,11 +35,15 @@ const detailFields: { [key: string]: { label?: string; render?: (label: string, 
         render: (label: string, value: any) => <p><strong>{label}:</strong> {formatDate({ date: new Date(value) })}</p>
     },
     "bo_publisher": { label: "Editorial" },
+    "inventory": {
+        label: "Disponibles",
+        render: (label: string, value: any) => <p><strong>{label}:</strong> {value?.filter((item: any) => availableStatuses.includes(item.in_stateId)).length ?? 0} copias</p>
+    },
 }
 
 const defaultRender = (key: string, value: any) => <p><strong>{key}:</strong> {value}</p>
 
-export default function DetailPage({ isModal }: { isModal?: string }) {
+export default function DetailPage({ isModal, setRedirect }: { isModal?: string, setRedirect?: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const params = useParams<{ id: string }>()
 
@@ -47,7 +53,14 @@ export default function DetailPage({ isModal }: { isModal?: string }) {
         router.back();
     }
 
+    const loanBook = () => {
+        setRedirect && setRedirect(true);
+        router.replace(`/book/${params.id}/loan`);
+    }
+
     const [data, setData] = useState<any>({});
+
+    const [isAvailable, setIsAvailable] = useState(false);
 
     const buildField = (key: string, value: any) => {
         const fieldConfig: { label?: string; render?: (label: string, value: any) => React.ReactElement } = detailFields[key];
@@ -70,6 +83,7 @@ export default function DetailPage({ isModal }: { isModal?: string }) {
             const request = await requestToApi({ method: "get", path });
             const requestData = request.data ?? [];
             setData(requestData);
+            setIsAvailable(requestData.inventory?.some((item: any) => availableStatuses.includes(item.in_stateId)) ?? false);
         }
         handleRequest();
 
@@ -80,7 +94,7 @@ export default function DetailPage({ isModal }: { isModal?: string }) {
             <div className="detail-header">
                 {isModal !== "true" && <DetailHeader title="Book Details" />}
                 <div className="detail-actions">
-                    <Button variant="contained" color="primary" onClick={backToList}>Realizar un préstamo</Button>
+                    {isAvailable && <Button variant="contained" color="primary" onClick={loanBook}>Realizar un préstamo</Button>}
                 </div>
             </div>
             <div className="detail-content">

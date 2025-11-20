@@ -19,7 +19,10 @@ import {
     KeyboardArrowUp as KeyboardArrowUpIcon,
     KeyboardArrowDown as KeyboardArrowDownIcon,
     ManageAccounts as ManageAccountsIcon,
-    AutoStories as AutoStoriesIcon
+    LocationCity as LocationCityIcon,
+    AutoStories as AutoStoriesIcon,
+    Inventory as InventoryIcon,
+    LocalGroceryStore as LocalGroceryStoreIcon
 } from "@mui/icons-material";
 
 import Button from "@mui/material/Button";
@@ -36,7 +39,15 @@ export default function Header() {
 
     const menuList = [
         { name: "Home", link: "/home", icon: <HomeIcon /> },
-        { name: "Books", link: "/book", icon: <AutoStoriesIcon /> },
+        {
+            name: "Library", icon: <LocationCityIcon />, items: [
+                { name: "Books", link: "/book", icon: <AutoStoriesIcon /> },
+                { name: "Inventory", link: "/inventory", icon: <InventoryIcon /> },
+                { name: "Loans", link: "/loan", icon: <LocalGroceryStoreIcon /> }
+            ]
+
+        },
+        ,
         {
             name: "Management", icon: <ManageAccountsIcon />, items: [
                 { name: "Users", link: "/user", icon: <PeopleIcon /> },
