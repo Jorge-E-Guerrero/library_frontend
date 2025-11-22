@@ -2,7 +2,7 @@
 
 import "./module.css";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 
 import {
@@ -18,10 +18,11 @@ import { debounce } from "lodash";
 import { requestToApi } from "@/src/helpers/middleware";
 import DetailHeader from '@/src/components/detail/header';
 import CustomSelect from '@/src/components/fields/CustomSelect';
+import { AuthContext } from "@/src/providers/auth";
 
 export default function Page() {
 
-    const employeeId = 1; // TODO: Obtener el ID del empleado logueado
+    const { user, isAuth } = useContext(AuthContext);
 
     const router = useRouter();
 
@@ -80,9 +81,10 @@ export default function Page() {
     const createLoan = async () => {
 
         const payload = {
-            lo_bookId: parseInt(params.id),
-            lo_employeeId: employeeId,
-            lo_membershipId: member.me_membershipId,
+            lo_inventoryId: parseInt(selectedInventory),
+            lo_employeeId: user?.employee?.em_employeeId,
+            lo_membershipId: member.membership?.ms_membershipId,
+            lo_debt: 0
         }
 
         const response = await requestToApi({ method: "post", path: `/loan`, payload: payload });
@@ -160,18 +162,20 @@ export default function Page() {
 
                                 <div className="member-loans">
                                     <h3>Active Loans</h3>
-                                    <List>
-                                        {member.membership.loans.map((loan: any) => (<div key={loan.lo_loanId} className="loan-item">
-                                            <p><strong>Loan ID:</strong> {loan.lo_loanId}</p>
-                                            <p><strong>Book:</strong> {loan.book.bo_name}</p>
-                                            <p><strong>Loan Date:</strong> {new Date(loan.lo_loanDate).toLocaleDateString()}</p>
-                                        </div>))}
+                                    <List className="active-loan-list">
+                                        {member.membership.loans.map((loan: any) => (
+                                            <div key={loan.lo_loanId} className="loan-item">
+                                                <p><strong>Loan ID:</strong> {loan.lo_loanId}</p>
+                                                <p><strong>Book:</strong> {loan.inventory.book.bo_name}</p>
+                                                <p><strong>Loan Date:</strong> {new Date(loan.lo_loanDate).toLocaleDateString()}</p>
+                                            </div>
+                                        ))}
                                     </List>
                                 </div>
 
                             }
 
-                            <CustomSelect 
+                            <CustomSelect
                                 id="inventorySelect"
                                 options={inventory.map(item => ({ value: item.in_inventoryId, label: [item.in_inventoryId, book.bo_name].join(" - ") }))}
                                 value={selectedInventory}

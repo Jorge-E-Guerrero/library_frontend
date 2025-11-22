@@ -6,6 +6,9 @@ import Theme from "../utils/theme";
 import Header from "../components/header";
 import Footer from "../components/footer";
 
+import { AuthContext, AuthProvider } from "../providers/auth";
+import { useContext } from "react";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,22 +26,30 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  auth,
+  noAuth
 }: Readonly<{
   children: React.ReactNode;
+  auth?: React.ReactNode;
+  noAuth?: React.ReactNode;
 }>) {
+
+  
+  
   return (
     <html lang="en">
       <head>
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Theme>
-          <Header />
-          <div className="main-container">
-            <div className="content-container">
-              {children}
+          <AuthProvider authHeader={auth} noAuthHeader={noAuth}>
+            <div className="main-container">
+              <div className="content-container">
+                {children}
+              </div>
             </div>
-          </div>
-          <Footer />
+            <Footer />
+          </AuthProvider>
         </Theme>
       </body>
     </html>

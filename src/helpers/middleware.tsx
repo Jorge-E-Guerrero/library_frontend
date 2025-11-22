@@ -24,7 +24,7 @@ export function setStorage({ type, key, value }: { type: 'local' | 'session'; ke
     }
 }
 
-export async function requestToApi({ method, path, payload, headers, addToken = true }: { method: string; path: string; payload?: any; headers?: any; addToken?: boolean }) {
+export async function requestToApi({ method, path, payload, headers, addToken = true }: { method: string; path: string; payload?: any; headers?: any; addToken?: boolean }) : Promise<{ [key: string]: any }> {
     try {
 
         const apiUrl = env.API_URL ?? 'http://localhost:4000/api/v1/library';
@@ -50,7 +50,7 @@ export async function requestToApi({ method, path, payload, headers, addToken = 
             .then(res => response = { ...res.data, status: res.status })
             .catch(err => response = err.response)
 
-        if (!response || response.status >= 400) console.error(`[API Request Error] ${method} ${path} - Status: ${response ? response.status : 'No Response'}`);
+        if (!response || response.status >= 400) console.warn(`[API Request Error] ${method} ${path} - Status: ${response ? response.status : 'No Response'}`);
 
         return response
 

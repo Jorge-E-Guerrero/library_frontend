@@ -63,7 +63,6 @@ body::-webkit-scrollbar {
 }
 
 header {
-  height: 60px;
   width: 100%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 1rem;
@@ -73,10 +72,39 @@ header {
 }
 
 .header-container {
-  padding: 1rem;
+  padding: .5rem;
   display: flex;
   justify-content: space-between;
   flex-direction: row;
+}
+
+.header-container .actions-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0 !important;
+}
+
+.header-container .logo-container {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0 1rem;
+  align-content: center;
+  align-items: center;
+}
+
+.header-container .logo-container h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.auth-button {
+  background-color: var(--auxiliary-color) !important;
+  color: var(--foreground);
+  border: none;
+  padding: 0.5rem 1rem !important;
+  border-radius: 50px !important;
+  cursor: pointer !important;
 }
 
 /*

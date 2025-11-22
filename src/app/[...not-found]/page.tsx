@@ -5,7 +5,7 @@ import "./not-found.css";
 import Button from '@mui/material/Button';
 import { redirect } from 'next/navigation'
 
-export default function Page() {
+export default function NotFound() {
     const redirectToHome = () => {
         redirect('/');
     };

@@ -15,7 +15,7 @@ const model = "loan";
 
 const formConfig = {
     fields: {
-        us_id: {
+        lo_loanId: {
             isId: true,
             label: "ID",
             type: "number",
@@ -25,24 +25,6 @@ const formConfig = {
             required: false,
             placeHolder: "ID",
         },
-        us_username: {
-            label: "Usuario",
-            type: "text",
-            visible: true,
-            creatable: true,
-            editable: true,
-            required: true,
-            placeholder: "Ingrese el nombre de usuario",
-        },
-        us_password: {
-            label: "Contraseña",
-            type: "password",
-            visible: true,
-            creatable: true,
-            editable: true,
-            required: true,
-            placeholder: "!Ejemplo123",
-        }
     }
 
 }
@@ -55,42 +37,18 @@ export default function Page() {
     const [loans, setLoans] = useState([]);
 
     const columns: GridColDef[] = [
-        { field: 'us_userId', headerName: 'ID', width: 100 },
-        { field: 'us_username', headerName: 'Name', flex: 1, minWidth: 150 },
-        {
-            field: "actions", headerName: "Actions", minWidth: 200, maxWidth: 200, renderCell: (params) => {
-
-                const { id, row } = params;
-                const itemData = loans.find((item: { us_userId: number }) => item.us_userId === id);
-
-                const itemConfig = { ...formConfig, router, id: params.id, data: itemData, model };
-
-                return ((
-                    <div className="actions-cell">
-                        <CrudModal
-                            id={id}
-                            data={row}
-                            formConfig={{ ...itemConfig, action: "show" }}
-                            onSuccess={handleSuccess}
-                        />
-                        <CrudModal
-                            id={params.row.us_userId}
-                            data={params.row}
-                            formConfig={{ ...itemConfig, action: "update" }}
-                            onSuccess={handleSuccess}
-                        />
-                        <CrudModal
-                            id={params.row.us_userId}
-                            data={params.row}
-                            formConfig={{ ...itemConfig, action: "delete" }}
-                            onSuccess={handleSuccess}
-                        />
-                    </div>
-                ))
-            }
-        }
-    ]
-
+        { field: 'lo_loanId', headerName: 'ID', flex: 1, width: 70 },
+        // { field: 'lo_membershipId', headerName: 'Membership ID', flex: 1, width: 150 },
+        // { field: 'lo_employeeId', headerName: 'Employee ID', flex: 1, width: 150 },
+        { field: 'lo_inventoryId', headerName: 'Inventory ID', flex: 1, width: 150 },
+        { field: 'lo_duration', headerName: 'Duration (days)', flex: 1, width: 150 },
+        { field: 'lo_debt', headerName: 'Debt', flex: 1, width: 100 },
+        { field: 'lo_loanDate', headerName: 'Loan Date', flex: 1, width: 180 },
+        { field: 'lo_dueDate', headerName: 'Due Date', flex: 1, width: 180 },
+        { field: 'lo_returnDate', headerName: 'Return Date', flex: 1, width: 180 },
+        { field: 'lo_isReturned', headerName: 'Is Returned', flex: 1, width: 130, type: 'boolean' },
+        { field: 'lo_isLateReturn', headerName: 'Is Late Return', flex: 1, width: 150, type: 'boolean' },
+    ];
 
     const refreshData = async () => {
         const request = await requestToApi({ method: "get", path: `/${model}` });
@@ -132,7 +90,7 @@ export default function Page() {
                 <DataGrid
                     rows={loans}
                     columns={columns}
-                    getRowId={(row) => row.us_userId}
+                    getRowId={(row) => row.lo_loanId}
                     initialState={{
                         pagination: {
                             paginationModel: {

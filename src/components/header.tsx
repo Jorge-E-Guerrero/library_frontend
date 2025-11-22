@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useContext, useEffect } from "react";
 
 import {
     Drawer,
@@ -13,7 +14,7 @@ import {
 } from "@mui/material";
 
 import {
-    Home as HomeIcon,
+    MenuBook as MenuBookIcon,
     People as PeopleIcon,
     Security as SecurityIcon,
     KeyboardArrowUp as KeyboardArrowUpIcon,
@@ -27,9 +28,13 @@ import {
 
 import Button from "@mui/material/Button";
 
+import { setStorage } from "../helpers/middleware";
 import DehazeIcon from '@mui/icons-material/Dehaze';
+import { AuthContext } from "../providers/auth";
 
-export default function Header() {
+export default function Header({ auth }: { auth?: boolean }) {
+
+    const router = useRouter();
 
     const [state, setState] = useState(false);
 
@@ -37,8 +42,39 @@ export default function Header() {
         setState(state);
     }
 
+
+    const { user, setUser, isAuth, setIsAuth } = useContext(AuthContext);
+
+    /*
+    console.log("User in Layout:", user);
+
+
+    useEffect(() => {
+        console.log("Initial User in Layout:", user);
+        setUser({ id: "1", name: "John Doe" }); // Example of setting user data
+    }, []);
+    */
+
+    useEffect(() => {
+        console.log("Updated User in Layout:", user);
+    }, [user?.id]);
+
+
+    const goToLogin = () => {
+        router.push("/auth/login");
+    }
+
+    const logOut = () => {
+        setUser({});
+        setIsAuth(false);
+
+        setStorage({ type: "local", key: "token", value: "" });
+
+        router.push("/");
+    }
+
+
     const menuList = [
-        { name: "Home", link: "/home", icon: <HomeIcon /> },
         {
             name: "Library", icon: <LocationCityIcon />, items: [
                 { name: "Books", link: "/book", icon: <AutoStoriesIcon /> },
@@ -47,7 +83,6 @@ export default function Header() {
             ]
 
         },
-        ,
         {
             name: "Management", icon: <ManageAccountsIcon />, items: [
                 { name: "Users", link: "/user", icon: <PeopleIcon /> },
@@ -122,18 +157,31 @@ export default function Header() {
 
     return (
         <header>
-            <Drawer anchor="left" open={state} onClose={() => sidebarToggle(false)}>
-                {sidebarContent()}
-            </Drawer>
+            {auth &&
+
+                <Drawer anchor="left" open={state} onClose={() => sidebarToggle(false)}>
+                    {sidebarContent()}
+                </Drawer>
+
+            }
             <div className="header-container">
-                <div className="menu-container">
-                    <Button variant="contained" color="primary" startIcon={<DehazeIcon />} onClick={() => sidebarToggle(true)}></Button>
-                </div>
+
+                {auth &&
+                    <div className="menu-container">
+                        <Button variant="contained" color="primary" startIcon={<DehazeIcon />} onClick={() => sidebarToggle(true)}></Button>
+                    </div>
+
+                }
                 <div className="logo-container">
+                    <MenuBookIcon className="header-icon" />
                     <h1>Library</h1>
                 </div>
+
                 <div className="actions-container">
-                    <button>Log In</button>
+                    {auth
+                        ? <Button variant="contained" color="secondary" className="auth-button" onClick={logOut}>Log Out</Button>
+                        : <Button variant="contained" color="primary" className="auth-button" onClick={goToLogin}>Log In</Button>
+                    }
                 </div>
             </div>
         </header>

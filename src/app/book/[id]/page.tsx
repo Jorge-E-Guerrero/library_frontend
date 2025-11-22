@@ -1,7 +1,7 @@
 "use client";
 
 import "./detail.css";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useRouter, useParams } from 'next/navigation'
 
 import {
@@ -14,6 +14,7 @@ import DetailHeader from '@/src/components/detail/header';
 import { requestToApi } from '@/src/helpers/middleware';
 import { fullname } from '@/src/helpers/general';
 import { formatDate } from "@/src/helpers/format";
+import { AuthContext } from "@/src/providers/auth";
 
 const model = "book";
 
@@ -44,6 +45,8 @@ const detailFields: { [key: string]: { label?: string; render?: (label: string, 
 const defaultRender = (key: string, value: any) => <p><strong>{key}:</strong> {value}</p>
 
 export default function DetailPage({ isModal, setRedirect }: { isModal?: string, setRedirect?: React.Dispatch<React.SetStateAction<boolean>> }) {
+
+    const { user, isAuth } = useContext(AuthContext);
 
     const params = useParams<{ id: string }>()
 
@@ -94,7 +97,7 @@ export default function DetailPage({ isModal, setRedirect }: { isModal?: string,
             <div className="detail-header">
                 {isModal !== "true" && <DetailHeader title="Book Details" />}
                 <div className="detail-actions">
-                    {isAvailable && <Button variant="contained" color="primary" onClick={loanBook}>Realizar un préstamo</Button>}
+                    {(isAuth && isAvailable) && <Button variant="contained" color="primary" onClick={loanBook}>Realizar un préstamo</Button>}
                 </div>
             </div>
             <div className="detail-content">

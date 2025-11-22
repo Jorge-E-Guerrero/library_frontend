@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, useSelectedLayoutSegment } from 'next/navigation'
 import { useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 
