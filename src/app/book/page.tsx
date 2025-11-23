@@ -21,7 +21,9 @@ import {
 
 import {
     Search as SearchIcon,
-    AutoStories as AutoStoriesIcon
+    AutoStories as AutoStoriesIcon,
+    Business as BusinessIcon,
+    EventAvailable as EventAvailableIcon,
 } from "@mui/icons-material";
 
 import Search from '../../components/utils/search';
@@ -209,7 +211,18 @@ export default function Page() {
                             />
                         </ListItem>)}
                     </Collapse>
-                    <Collapse name="Publishers" icon={<AutoStoriesIcon />}>
+                    <Collapse name="Publishers" icon={<BusinessIcon />}>
+                        {publishers.map((publisher: any) => <ListItem className="filter-item" key={publisher.pu_publisherId}>
+                            <Typography className="filter-name" variant="body1">{publisher.pu_publisherName}</Typography>
+                            <Checkbox
+                                className="filter-checkbox"
+                                name={publisher.pu_publisherId.toString()}
+                                checked={selectedPublishers[publisher.pu_publisherId]}
+                                onChange={checkPublisher}
+                            />
+                        </ListItem>)}
+                    </Collapse>
+                    <Collapse name="Availability" icon={<EventAvailableIcon />}>
                         {publishers.map((publisher: any) => <ListItem className="filter-item" key={publisher.pu_publisherId}>
                             <Typography className="filter-name" variant="body1">{publisher.pu_publisherName}</Typography>
                             <Checkbox

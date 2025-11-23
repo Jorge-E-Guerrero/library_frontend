@@ -8,6 +8,7 @@ import AddIcon from '@mui/icons-material/Add';
 
 import CrudModal from '../../components/modals/crud';
 
+import { Table } from '@/src/components/table';
 import { requestToApi } from '../../helpers/middleware';
 
 
@@ -64,46 +65,20 @@ export default function Page() {
         refreshData();
     }, []);
 
-    const rowSelectionEvent: GridEventListener<'rowClick'> = (params) => {
-        return
-        console.log(`User "${params.row.us_username}" clicked`);
-        // Navigate to the user details page
-        router.push(`/user/${params.row.us_userId}`);
-    };
+    const config = {
+        title: "Loans Management",
+        table: {
+            rowId: 'lo_loanId'
+        }
+    }
 
     return (
         <div className="page-container">
-            <div className="page-header-container">
-                <div className="title-container">
-                    <h1>Loan Management</h1>
-                </div>
-                <div className="actions-container">
-                    <CrudModal
-                        id={null}
-                        data={{}}
-                        formConfig={{ ...formConfig, model, action: "create" }}
-                        onSuccess={handleSuccess}
-                    />
-                </div>
-            </div>
-            <div className="table-container">
-                <DataGrid
-                    rows={loans}
-                    columns={columns}
-                    getRowId={(row) => row.lo_loanId}
-                    initialState={{
-                        pagination: {
-                            paginationModel: {
-                                pageSize: 5,
-                            },
-                        },
-                    }}
-                    onRowClick={rowSelectionEvent}
-                    pageSizeOptions={[5]}
-                    //checkboxSelection
-                    disableRowSelectionOnClick
-                />
-            </div>
+            <Table
+                data={loans}
+                config={config}
+                columns={columns}
+            />
         </div>
     )
 }

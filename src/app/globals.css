@@ -324,3 +324,48 @@ footer {
   margin: 0;
   scale: calc(1.1);
 }
+
+
+
+.table-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    height: fit-content;
+    width: 100%;
+    background-color: var(--secondary-color);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-title {
+    font-size: 1.25rem;
+    background-color: var(--primary-color);
+    color: white;
+    padding: .6rem 1.2rem;
+    border-radius: 50px;
+    width: fit-content;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--bo-color);
+}
+
+.table-data-grid {
+    background-color: var(--secondary-color);
+    color: var(--foreground);
+}
+
+.table-data-grid .MuiDataGrid-toolbar {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.table-data-grid .MuiDataGrid-columnHeader {
+    background-color: var(--auxiliary-color) !important;
+}

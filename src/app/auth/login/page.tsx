@@ -1,5 +1,7 @@
 "use client";
 
+import "./login.css";
+
 import { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
 
@@ -56,6 +58,10 @@ export default function LoginPage() {
 
     return (
         <div className="auth-container">
+
+            <div className="form-header">
+                <h1 className="form-title">Log In</h1>
+            </div>
 
             <div className="form-container">
 

@@ -8,6 +8,7 @@ import AddIcon from '@mui/icons-material/Add';
 
 import CrudModal from '../../components/modals/crud';
 
+import { Table } from '@/src/components/table';
 import { requestToApi } from '../../helpers/middleware';
 
 
@@ -57,7 +58,9 @@ export default function Page() {
   const columns: GridColDef[] = [
     { field: 'us_userId', headerName: 'ID', width: 100 },
     { field: 'us_username', headerName: 'Name', flex: 1, minWidth: 150 },
-    { field: "actions", headerName: "Actions", minWidth: 200, maxWidth: 200, renderCell: (params) => {
+    {
+      field: "actions", headerName: "Actions", minWidth: 200, maxWidth: 200,
+      renderCell: (params) => {
 
         const { id, row } = params;
         const itemData = data.find((item: { us_userId: number }) => item.us_userId === id);
@@ -105,46 +108,29 @@ export default function Page() {
     refreshData();
   }, []);
 
-  const rowSelectionEvent: GridEventListener<'rowClick'> = (params) => {
-    return
-    console.log(`User "${params.row.us_username}" clicked`);
-    // Navigate to the user details page
-    router.push(`/user/${params.row.us_userId}`);
-  };
+  const config = {
+    title: "User Management",
+    table: {
+      rowId: 'us_userId'
+    }
+  }
 
   return (
     <div className="page-container">
-      <div className="page-header-container">
-        <div className="title-container">
-          <h1>User Management</h1>
-        </div>
-        <div className="actions-container">
+      <Table
+        data={data}
+        config={config}
+        columns={columns}
+        loading={false}
+        tableActions={
           <CrudModal
             id={null}
             data={{}}
             formConfig={{ ...formConfig, model, action: "create" }}
             onSuccess={handleSuccess}
           />
-        </div>
-      </div>
-      <div className="table-container">
-        <DataGrid
-          rows={data}
-          columns={columns}
-          getRowId={(row) => row.us_userId}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
-            },
-          }}
-          onRowClick={rowSelectionEvent}
-          pageSizeOptions={[5]}
-          //checkboxSelection
-          disableRowSelectionOnClick
-        />
-      </div>
+        }
+      />
     </div>
   )
 }

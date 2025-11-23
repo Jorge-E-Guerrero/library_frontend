@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 
 import {
+    Assessment as AssessmentIcon,
     MenuBook as MenuBookIcon,
     People as PeopleIcon,
     Security as SecurityIcon,
@@ -87,6 +88,7 @@ export default function Header({ auth }: { auth?: boolean }) {
             name: "Management", icon: <ManageAccountsIcon />, items: [
                 { name: "Users", link: "/user", icon: <PeopleIcon /> },
                 { name: "Roles", link: "/role", icon: <SecurityIcon /> },
+                { name: "Reports", link: "/report", icon: <AssessmentIcon /> }
             ]
         },
     ];
