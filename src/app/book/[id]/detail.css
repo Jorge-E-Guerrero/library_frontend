@@ -81,7 +81,9 @@
 
 .detail-image {
     align-self: center;
-    width: 200px;
     height: auto;
     padding: 1rem;
+    width: 100% !important;
+    width: -webkit-fill-available !important;
+    max-width: max-content !important;
 }

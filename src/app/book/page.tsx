@@ -257,7 +257,7 @@ export default function Page() {
                                 />
                                 <CardMedia className='book-card-media'
                                     component="img"
-                                    image={card.bo_coverImageUrl ?? "/image/no_book.jpg"}
+                                    image={card.bo_image ?? "/image/no_book.jpg"}
                                     alt={`${card.bo_name} cover`}
                                 />
                             </CardActionArea>

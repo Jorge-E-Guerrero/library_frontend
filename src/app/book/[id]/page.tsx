@@ -29,13 +29,21 @@ const detailFields: { [key: string]: { label?: string; render?: (label: string, 
         label: "Autores",
         render: (label: string, value: any) => <p><strong>{label}:</strong> {value.map((author: any) => fullname(author.person?.pe_firstName, author.person?.pe_lastName)).join(", ")}</p>
     },
-    "bo_isbn": { label: "ISBN" },
-    "bo_damageFee": { label: "Tarifa por Daño" },
+    "publisher": {
+        label: "Editorial",
+        render: (label: string, value: any) => <p><strong>{label}:</strong> {value?.pu_publisherName}</p>
+    },
     "bo_published": {
         label: "Año de Publicación",
         render: (label: string, value: any) => <p><strong>{label}:</strong> {formatDate({ date: new Date(value) })}</p>
     },
+    "bo_language": { label: "Idioma" },
+    "bo_pages": { label: "Número de páginas" },
+    "bo_shelfLocation": { label: "Estantería" },
+    
     "bo_publisher": { label: "Editorial" },
+    "bo_damageFee": { label: "Tarifa por Daño" },
+    "bo_lateReturnFee": { label: "Tarifa por Retraso" },
     "inventory": {
         label: "Disponibles",
         render: (label: string, value: any) => <p><strong>{label}:</strong> {value?.filter((item: any) => availableStatuses.includes(item.in_stateId)).length ?? 0} copias</p>
@@ -107,7 +115,7 @@ export default function DetailPage({ isModal, setRedirect }: { isModal?: string,
                 <div className="detail-image-container">
                     <CardMedia className='detail-image'
                         component="img"
-                        image={data.bo_coverImageUrl ?? "/image/no_book.jpg"}
+                        image={data.bo_image ?? "/image/no_book.jpg"}
                         alt={`${data.bo_name} cover`}
                     />
                 </div>
