@@ -2,7 +2,7 @@
 
 import { useState, createContext, useEffect } from "react";
 
-import { requestToApi } from "../helpers/middleware";
+import { getStorage, requestToApi, setStorage } from "../helpers/middleware";
 
 export const AuthContext = createContext<{
     isAuth?: boolean;
@@ -19,10 +19,18 @@ export function AuthProvider({ children, authHeader, noAuthHeader }: { children:
     const validateToken = async () => {
         try {
 
+            const hasToken = getStorage({ type: "local", key: "token" });
+            if (!hasToken) {
+                setIsAuth(false);
+                setUser({});
+                return;
+            }
+
             const response = await requestToApi({ method: "get", path: "/auth/validate" });
             if (response.status !== 200) {
                 setIsAuth(false);
                 setUser({});
+                setStorage({ type: "local", key: "token", value: "" });
                 return
             }
 
