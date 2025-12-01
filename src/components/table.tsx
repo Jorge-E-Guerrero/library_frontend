@@ -1,5 +1,6 @@
 "use client";
 
+import { Box } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 export function Table({ data, config, columns, loading = false, tableActions }: { data: any[], config: any, columns: GridColDef[], loading?: boolean, tableActions?: React.ReactNode }) {
@@ -13,14 +14,17 @@ export function Table({ data, config, columns, loading = false, tableActions }: 
                     {tableActions}
                 </div>
             </div>
-            <DataGrid
-                className="table-data-grid"
-                rows={data}
-                columns={columns}
-                getRowId={(row) => row[config.table.rowId]}
-                loading={loading}
-                showToolbar
-            />
+            <Box sx={{ height: config.table.height ?? 600, width: '100%' }}>
+                <DataGrid
+                    className="table-data-grid"
+                    rows={data}
+                    columns={columns}
+                    getRowId={(row) => row[config.table.rowId]}
+                    loading={loading}
+                    initialState={config.table.initialState ?? {}}
+                    showToolbar
+                />
+            </Box>
         </div>
     );
 }

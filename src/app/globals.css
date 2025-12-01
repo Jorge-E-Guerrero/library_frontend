@@ -366,6 +366,7 @@ footer {
     color: white;
 }
 
-.table-data-grid .MuiDataGrid-columnHeader {
+.table-data-grid .MuiDataGrid-columnHeader,
+.table-data-grid .MuiDataGrid-scrollbarFiller {
     background-color: var(--auxiliary-color) !important;
 }

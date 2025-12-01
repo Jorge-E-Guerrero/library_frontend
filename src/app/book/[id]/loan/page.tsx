@@ -7,7 +7,6 @@ import { useRouter, useParams } from 'next/navigation';
 
 import {
     Box,
-    ClickAwayListener,
     List,
     TextField,
     Button,
@@ -19,6 +18,7 @@ import { requestToApi } from "@/src/helpers/middleware";
 import DetailHeader from '@/src/components/detail/header';
 import CustomSelect from '@/src/components/fields/CustomSelect';
 import { AuthContext } from "@/src/providers/auth";
+import { formatDate } from "@/src/helpers/format";
 
 export default function Page() {
 
@@ -101,7 +101,6 @@ export default function Page() {
         return responseData;
     }
 
-
     return (
         <div className="detail-container">
             <div className="detail-header">
@@ -109,7 +108,6 @@ export default function Page() {
             </div>
             <div className="detail-content">
                 <Box className="loan-form-container">
-
                     <div className="form-field">
                         <label htmlFor="memberId" className="form-label">Member ID</label>
                         <TextField
@@ -122,7 +120,6 @@ export default function Page() {
                         />
                     </div>
                     {member && member.me_memberId &&
-
                         <div className="member-info">
                             <div className="form-field">
                                 <label htmlFor="memberName" className="form-label">Member Name</label>
@@ -140,7 +137,7 @@ export default function Page() {
                                 <TextField
                                     id="memberDebt"
                                     name="memberDebt"
-                                    value={member.me_debt || 0}
+                                    value={member.membership?.loans?.reduce((acc: number, loan: any) => acc + loan.currentDebt, 0) || 0}
                                     className="form-input"
                                     variant="outlined"
                                     disabled
@@ -157,9 +154,7 @@ export default function Page() {
                                     disabled
                                 />
                             </div>
-
                             {member.membership.loans.length > 0 &&
-
                                 <div className="member-loans">
                                     <h3>Active Loans</h3>
                                     <List className="active-loan-list">
@@ -167,40 +162,33 @@ export default function Page() {
                                             <div key={loan.lo_loanId} className="loan-item">
                                                 <p><strong>Loan ID:</strong> {loan.lo_loanId}</p>
                                                 <p><strong>Book:</strong> {loan.inventory.book.bo_name}</p>
-                                                <p><strong>Loan Date:</strong> {new Date(loan.lo_loanDate).toLocaleDateString()}</p>
+                                                <p><strong>Loan Date:</strong> {formatDate({ date: loan.lo_loanDate })}</p>
+                                                <p><strong>Due Date:</strong> {formatDate({ date: loan.lo_dueDate })}</p>
+                                                <p><strong>Debt:</strong> {loan.currentDebt}</p>
                                             </div>
                                         ))}
                                     </List>
                                 </div>
-
                             }
-
                             <CustomSelect
                                 id="inventorySelect"
                                 options={inventory.map(item => ({ value: item.in_inventoryId, label: [item.in_inventoryId, book.bo_name].join(" - ") }))}
                                 value={selectedInventory}
                                 setValue={setSelectedInventory}
                             />
-
-
-
                             <div className="modal-footer">
                                 <div className="modal-actions">
                                     <Button variant="contained" color="secondary" onClick={goBack}>Cancel</Button>
                                     {(
-                                        (member.membership?.ms_debt <= 0) &&
+                                        (member.membership?.loans?.reduce((acc: number, loan: any) => acc + loan.currentDebt, 0) <= 0) &&
                                         (member.membership.loans.length < member.membership.membershipCategory.mc_borrowLimit)
                                     ) &&
                                         <Button variant="contained" color="primary" onClick={handleSubmit}>Loan</Button>
                                     }
                                 </div>
                             </div>
-
                         </div>
-
-
                     }
-
                 </Box>
             </div>
             <div className="detail-footer">

@@ -1,41 +1,36 @@
 "use client";
 
-import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
-import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
-import Fab from '@mui/material/Fab';
-import AddIcon from '@mui/icons-material/Add';
+import { GridColDef } from '@mui/x-data-grid';
 
-import CrudModal from '../../components/modals/crud';
+import {
+    Button,
+} from '@mui/material';
 
+import {
+    KeyboardReturn as KeyboardReturnIcon,
+    Visibility as VisibilityIcon
+} from '@mui/icons-material';
+
+import { ReturnModal } from '../../components/modals/return';
 import { Table } from '@/src/components/table';
 import { requestToApi } from '../../helpers/middleware';
+import { formatDate } from '@/src/helpers/format';
 
 
 const model = "loan";
 
-const formConfig = {
-    fields: {
-        lo_loanId: {
-            isId: true,
-            label: "ID",
-            type: "number",
-            visible: false,
-            creatable: false,
-            editable: false,
-            required: false,
-            placeHolder: "ID",
-        },
-    }
-
-}
-
 export default function Page() {
 
-
-    const router = useRouter();
-
     const [loans, setLoans] = useState([]);
+
+    const [openReturnModal, setOpenReturnModal] = useState(false);
+    const [modalConfig, setModalConfig] = useState<{ [key: string]: any }>({ title: "Return Loan" });
+
+    const handleOpenReturnModal = (row: { [key: string]: any }) => {
+        setModalConfig((prev: { [key: string]: any }) => ({ ...prev, id: row.lo_loanId }));
+        return setOpenReturnModal(true);
+    }
 
     const columns: GridColDef[] = [
         { field: 'lo_loanId', headerName: 'ID', flex: 1, width: 70 },
@@ -44,11 +39,21 @@ export default function Page() {
         { field: 'lo_inventoryId', headerName: 'Inventory ID', flex: 1, width: 150 },
         { field: 'lo_duration', headerName: 'Duration (days)', flex: 1, width: 150 },
         { field: 'lo_debt', headerName: 'Debt', flex: 1, width: 100 },
-        { field: 'lo_loanDate', headerName: 'Loan Date', flex: 1, width: 180 },
-        { field: 'lo_dueDate', headerName: 'Due Date', flex: 1, width: 180 },
-        { field: 'lo_returnDate', headerName: 'Return Date', flex: 1, width: 180 },
+        { field: 'lo_loanDate', headerName: 'Loan Date', flex: 1, width: 180, renderCell: (params) => (formatDate({ date: params.value })) },
+        { field: 'lo_dueDate', headerName: 'Due Date', flex: 1, width: 180, renderCell: (params) => (formatDate({ date: params.value })) },
+        { field: 'lo_returnDate', headerName: 'Return Date', flex: 1, width: 180, renderCell: (params) => (formatDate({ date: params.value })) },
         { field: 'lo_isReturned', headerName: 'Is Returned', flex: 1, width: 130, type: 'boolean' },
         { field: 'lo_isLateReturn', headerName: 'Is Late Return', flex: 1, width: 150, type: 'boolean' },
+        {
+            field: "actions", headerName: "Actions", flex: 1, width: 150, type: "actions",
+            renderCell: (params) => {
+                return (
+                    <div className='table-row-actions' >
+                        <Button className='icon-button' variant="contained" color="primary" startIcon={params.row.lo_isLateReturn ? <VisibilityIcon /> : <KeyboardReturnIcon />} onClick={() => handleOpenReturnModal(params.row)} />
+                    </div>
+                )
+            }
+        }
     ];
 
     const refreshData = async () => {
@@ -68,7 +73,11 @@ export default function Page() {
     const config = {
         title: "Loans Management",
         table: {
-            rowId: 'lo_loanId'
+            rowId: 'lo_loanId',
+            initialState: {
+                sorting: { sortModel: [{ field: 'lo_loanId', sort: 'desc' }] },
+                pagination: { paginationModel: { pageSize: 20, page: 0 } }
+            }
         }
     }
 
@@ -79,6 +88,7 @@ export default function Page() {
                 config={config}
                 columns={columns}
             />
+            <ReturnModal config={modalConfig} open={openReturnModal} setOpen={setOpenReturnModal} onSuccess={handleSuccess}></ReturnModal>
         </div>
     )
 }
